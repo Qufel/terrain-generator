@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="Prototype" load_steps=2 format=3 uid="uid://btifiupo33g8d"]
+
+[ext_resource type="Script" path="res://Scripts/Terrain/Prototype.gd" id="2_0mdj7"]
+
+[resource]
+script = ExtResource("2_0mdj7")
+rotation = 0
+sockets = {
+"nX": "",
+"nY": "",
+"pX": "",
+"pY": ""
+}
+neighboursList = {
+"nX": [],
+"nY": [],
+"pX": [],
+"pY": []
+}

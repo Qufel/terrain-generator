@@ -1,0 +1,130 @@
+[gd_scene load_steps=7 format=3 uid="uid://0ct1rst3xen3"]
+
+[ext_resource type="Script" path="res://Scripts/Camera/CameraController.gd" id="1_qu77p"]
+[ext_resource type="Script" path="res://Scripts/Terrain/TerrainGeneration.gd" id="2_ij44v"]
+
+[sub_resource type="GDScript" id="GDScript_xdphb"]
+resource_name = "XTerrain"
+script/source = "extends SpinBox
+
+func _ready():
+	get_line_edit().set_text(String.num(%Terrain.terrainSize.x))
+"
+
+[sub_resource type="GDScript" id="GDScript_r30rt"]
+resource_name = "YTerrain"
+script/source = "extends SpinBox
+
+func _ready():
+	get_line_edit().set_text(String.num(%Terrain.terrainSize.y))
+"
+
+[sub_resource type="GDScript" id="GDScript_k0xwk"]
+resource_name = "XChunk"
+script/source = "extends SpinBox
+
+func _ready():
+	get_line_edit().set_text(String.num(%Terrain.chunkSize.x))
+"
+
+[sub_resource type="GDScript" id="GDScript_6n5le"]
+resource_name = "YChunk"
+script/source = "extends SpinBox
+
+func _ready():
+	get_line_edit().set_text(String.num(%Terrain.chunkSize.y))
+"
+
+[node name="Game" type="Node3D"]
+
+[node name="CameraController" type="Node3D" parent="."]
+script = ExtResource("1_qu77p")
+speed = 30.0
+panSpeed = 30.0
+zoomSpeed = 60.0
+zoomMax = 40.0
+rotationSpeed = 4.0
+
+[node name="CameraSocket" type="Node3D" parent="CameraController"]
+transform = Transform3D(-1, 6.18172e-08, -6.18172e-08, 0, 0.707107, 0.707107, 8.74228e-08, 0.707107, -0.707107, 0, 30, -30)
+
+[node name="Camera3D" type="Camera3D" parent="CameraController/CameraSocket"]
+current = true
+
+[node name="Terrain" type="Node3D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_ij44v")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.368044, 0.464905, -0.805238, -1.12848e-08, 0.866025, 0.500001, 0.929809, -0.184022, 0.318735, 0, 0, 0)
+shadow_enabled = true
+
+[node name="UserInterface" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TerrainControls" type="PanelContainer" parent="UserInterface"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UserInterface/TerrainControls"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/TerrainControls/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+text = "Terrain Size"
+
+[node name="TerrainSize" type="HBoxContainer" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="X" type="SpinBox" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer2/TerrainSize"]
+layout_mode = 2
+allow_greater = true
+script = SubResource("GDScript_xdphb")
+
+[node name="Y" type="SpinBox" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer2/TerrainSize"]
+layout_mode = 2
+allow_greater = true
+script = SubResource("GDScript_r30rt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Label2" type="Label" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Chunk Size"
+
+[node name="ChunkSize" type="HBoxContainer" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="X" type="SpinBox" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer/ChunkSize"]
+layout_mode = 2
+allow_greater = true
+script = SubResource("GDScript_k0xwk")
+
+[node name="Y" type="SpinBox" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer/VBoxContainer/ChunkSize"]
+layout_mode = 2
+allow_greater = true
+script = SubResource("GDScript_6n5le")
+
+[node name="Button" type="Button" parent="UserInterface/TerrainControls/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Generate Terrain"

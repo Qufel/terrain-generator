@@ -1,0 +1,61 @@
+[gd_scene load_steps=13 format=3 uid="uid://d4nwsiq67fv86"]
+
+[ext_resource type="ArrayMesh" uid="uid://cstcrxdbt75vg" path="res://Assets/Terrain/Tiles/Meshes/LandBottom.res" id="1_s4y4l"]
+[ext_resource type="ArrayMesh" uid="uid://msqqth6jcqov" path="res://Assets/Terrain/Tiles/Meshes/LandCornerIn.res" id="2_3js13"]
+[ext_resource type="ArrayMesh" uid="uid://b4ppr3l5eigc0" path="res://Assets/Terrain/Tiles/Meshes/LandCornerOut.res" id="3_jwv0m"]
+[ext_resource type="ArrayMesh" uid="uid://bnfxr81ts1kd6" path="res://Assets/Terrain/Tiles/Meshes/LandSide.res" id="4_1xnm5"]
+[ext_resource type="ArrayMesh" uid="uid://gbf3wyik01b2" path="res://Assets/Terrain/Tiles/Meshes/LandTop.res" id="5_rs1y2"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_75mpc"]
+resource_local_to_scene = true
+transform_format = 1
+mesh = ExtResource("1_s4y4l")
+
+[sub_resource type="MultiMesh" id="MultiMesh_dso4k"]
+resource_local_to_scene = true
+transform_format = 1
+mesh = ExtResource("2_3js13")
+
+[sub_resource type="MultiMesh" id="MultiMesh_d7svq"]
+resource_local_to_scene = true
+transform_format = 1
+mesh = ExtResource("3_jwv0m")
+
+[sub_resource type="MultiMesh" id="MultiMesh_ot872"]
+resource_local_to_scene = true
+transform_format = 1
+mesh = ExtResource("4_1xnm5")
+
+[sub_resource type="MultiMesh" id="MultiMesh_v1k8r"]
+resource_local_to_scene = true
+transform_format = 1
+mesh = ExtResource("5_rs1y2")
+
+[sub_resource type="BoxMesh" id="BoxMesh_yro02"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1468t"]
+shading_mode = 0
+diffuse_mode = 3
+albedo_color = Color(1, 0.137255, 0.14902, 1)
+
+[node name="Chunk" type="Node3D"]
+
+[node name="LandBottomMultiMesh" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_75mpc")
+
+[node name="LandCornerInMultiMesh" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_dso4k")
+
+[node name="LandCornerOutMultiMesh" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_d7svq")
+
+[node name="LandSideMultiMesh" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_ot872")
+
+[node name="LandTopMultiMesh" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_v1k8r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_yro02")
+surface_material_override/0 = SubResource("StandardMaterial3D_1468t")

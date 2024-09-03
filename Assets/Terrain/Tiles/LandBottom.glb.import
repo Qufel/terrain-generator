@@ -1,0 +1,53 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://dn6e35tgnalhm"
+path="res://.godot/imported/LandBottom.glb-d12e6bc46cc1a996b1c9b27b08d9154c.scn"
+
+[deps]
+
+source_file="res://Assets/Terrain/Tiles/LandBottom.glb"
+dest_files=["res://.godot/imported/LandBottom.glb-d12e6bc46cc1a996b1c9b27b08d9154c.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/apply_root_scale=true
+nodes/root_scale=0.5
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=false
+animation/import=false
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+import_script/path=""
+_subresources={
+"materials": {
+"Dirt_Colour": {
+"use_external/enabled": true,
+"use_external/path": "res://Assets/Materials/Dirt.tres"
+}
+},
+"meshes": {
+"LandBottom_Plane_013": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/make_streamable": true,
+"save_to_file/path": "res://Assets/Terrain/Tiles/Meshes/LandBottom.res"
+}
+}
+}
+gltf/naming_version=1
+gltf/embedded_image_handling=1
