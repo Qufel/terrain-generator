@@ -1,15 +1,18 @@
-[gd_resource type="Resource" script_class="Prototype" load_steps=2 format=3 uid="uid://ddk0y4kmhiyj5"]
+[gd_resource type="Resource" script_class="Prototype" load_steps=3 format=3 uid="uid://wc0kui3kj34k"]
 
+[ext_resource type="ArrayMesh" uid="uid://bnfxr81ts1kd6" path="res://Assets/Terrain/Tiles/Meshes/LandSide.res" id="1_4bvdr"]
 [ext_resource type="Script" path="res://Scripts/Terrain/Prototype.gd" id="2_j1qe7"]
 
 [resource]
 script = ExtResource("2_j1qe7")
-rotation = 0
+mesh = ExtResource("1_4bvdr")
+rotation = 2
+weight = 1
 sockets = {
-"nX": "",
-"nY": "",
-"pX": "",
-"pY": ""
+"nX": "0",
+"nY": "3f",
+"pX": "1",
+"pY": "3f"
 }
 neighboursList = {
 "nX": [],
