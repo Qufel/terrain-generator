@@ -3,16 +3,13 @@ extends Node3D
 @onready var camera : Camera3D = $CameraSocket/Camera3D
 
 @export_group("Move")
-var canMove : bool = true
 @export var speed : float = 10.0
 
 @export_group("Pan")
-var canPan : bool = true
 @export_range(0, 32, 4) var panMargin : int = 16
 @export var panSpeed : float = 12.0
 
 @export_group("Zoom")
-var canZoom : bool = true
 var zoomDir : float = 0.0
 @export var zoomSpeed : float = 40.0
 @export var zoomMin : float = 10.0
@@ -20,9 +17,14 @@ var zoomDir : float = 0.0
 @export var zoomSpeedDamp : float = 0.92
 
 @export_group("Rotate")
-var canRotate : bool = true
 @export var rotationSpeed : float = 15.0
 var rotationDir : float = 0
+
+@export_group("Flags")
+@export var canMove : bool = true
+@export var canPan : bool = true
+@export var canZoom : bool = true
+@export var canRotate : bool = true
 
 func _process(delta):
 	Move(delta)

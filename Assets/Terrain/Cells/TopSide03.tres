@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Cell" load_steps=3 format=3 uid="uid://dxb4ar6dqrpnk"]
+
+[ext_resource type="ArrayMesh" uid="uid://dq2u3nwy0dep8" path="res://Assets/Terrain/Tiles/ TileSide.res" id="1_odfdp"]
+[ext_resource type="Script" path="res://Scripts/Terrain/CellResource.gd" id="2_17qh6"]
+
+[resource]
+script = ExtResource("2_17qh6")
+mesh = ExtResource("1_odfdp")
+rotation = 0
+corners = 3

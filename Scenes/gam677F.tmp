@@ -26,18 +26,14 @@ current = true
 unique_name_in_owner = true
 script = ExtResource("2_swhnp")
 chunkSize = Vector2i(16, 16)
-chunkCount = Vector2i(16, 16)
+chunkCount = Vector2i(64, 64)
 chunk = ExtResource("3_2atci")
 cellValues = "res://Assets/Terrain/Cells"
 noise = SubResource("FastNoiseLite_6blkl")
-water = -0.3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.368044, 0.464905, -0.805238, -1.12848e-08, 0.866025, 0.500001, 0.929809, -0.184022, 0.318735, 0, 0, 0)
 shadow_enabled = true
-directional_shadow_blend_splits = true
-directional_shadow_fade_start = 1.0
-directional_shadow_max_distance = 256.0
 
 [node name="UserInterface" type="Control" parent="."]
 layout_mode = 3

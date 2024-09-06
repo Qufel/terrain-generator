@@ -35,14 +35,14 @@ func _on_resolve_neighbours_button_up():
 							print("- %s" % pr.resource_path)
 							print("[%s, %s]" % [pr.sockets["n%s" % side], p.sockets[key]])
 							if key not in p.neighboursList:
-								p.neighboursList[key] = [pr]
+								p.neighboursList[key] = [pr.prototypeId]
 							else:
-								p.neighboursList[key].append(pr)
+								p.neighboursList[key].append(pr.prototypeId)
 					if value == "n":
 						if pr.sockets["p%s" % side] == p.sockets[key]:
 							print("- %s" % pr.resource_path)
 							print("[%s, %s]" % [pr.sockets["p%s" % side], p.sockets[key]])
 							if key not in p.neighboursList:
-								p.neighboursList[key] = [pr]
+								p.neighboursList[key] = [pr.prototypeId]
 							else:
-								p.neighboursList[key].append(pr)
+								p.neighboursList[key].append(pr.prototypeId)
