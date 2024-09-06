@@ -21,12 +21,28 @@ var offsetX : float
 var offsetY : float
 
 # NOTE High amount of max threads can bring heavy load for PC and cause crashes
-const MAX_THREADS = 16
-var generationQueue : Array[Callable] = []
-var workingThreads : Array[Thread] = []
+var max_threads = int(OS.get_processor_count() / 2)
+var generationQueue : Array = []
+var workingThreads : Array = []
 
-func _ready():
+func GenerateMap():
+	# INFO clears previous map iteration if existed
+	if get_children().size() > 0:
+		ClearMap()
+	
+	# INFO Generates base terrain
 	GenerateTerrain()
+	# TODO Resource generation
+	 
+	# TODO Forest generation
+	
+	# TODO Foliage generation
+	
+## Clears previous map
+func ClearMap():
+	for n in get_children():
+		remove_child(n)
+		n.queue_free()
 
 func GenerateTerrain():
 	#region Initialize and check variables
@@ -58,10 +74,12 @@ func GenerateTerrain():
 				0,
 				y * chunkSize.y - offsetY
 			)
-			var thread = Thread.new()
-			workingThreads.append(thread)
-			thread.start(GenerateChunk.bind(pos, x, y, thread))
-
+			QueueTask({
+				"position" : pos,
+				"x" : x,
+				"y" : y
+			})
+	
 func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 	var chunkInstance = chunk.instantiate()
 	chunkInstance.position = pos
@@ -112,6 +130,7 @@ func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 			
 			multimesh = null
 	
+	# INFO Sets transforms in proper multimeshes 
 	for mesh in meshesPos.keys():
 		var transforms : Array = meshesPos[mesh].duplicate()
 		for i in range(len(meshesPos[mesh])):
@@ -123,6 +142,7 @@ func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 		multimesh.name = "MultiMesh_%s" % multimesh.multimesh.mesh.resource_name
 		chunkInstance.get_node("TerrainMeshes").add_child(multimesh)
 	
+	# INFO Clear variables and call deferred function
 	meshesUsed = {}
 	meshesPos = {}
 	call_deferred("DisplayChunk", thr)
@@ -130,8 +150,9 @@ func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 
 func DisplayChunk(thr : Thread):
 	var chunkProduct = thr.wait_to_finish()
-	call_deferred("add_child", chunkProduct)
 	workingThreads.erase(thr)
+	call_deferred("add_child", chunkProduct)
+	StartTask()
 
 ##Function collecting perlin values of the cell corners and converting it to single int value used to get proper cell type/mesh
 func GetCornersValue(x : float, y : float) -> int:
@@ -167,7 +188,20 @@ func GetCellByCorners(cv : int) -> Cell:
 			
 	return Cell.new()
 
+func QueueTask(data):
+	generationQueue.append(data)
+	StartTask()
+
+func StartTask():
+	if workingThreads.size() < max_threads and generationQueue.size() > 0:
+		var data = generationQueue.pop_front()
+		var thread = Thread.new()
+		workingThreads.append(thread)
+		thread.start(GenerateChunk.bind(data["position"], data["x"], data["y"], thread))
+
 func _exit_tree():
+	generationQueue.clear()
 	if len(workingThreads) > 0:
 		for thr in workingThreads:
 			thr.wait_to_finish()
+			workingThreads.erase(thr)

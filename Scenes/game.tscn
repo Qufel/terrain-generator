@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://0ct1rst3xen3"]
+[gd_scene load_steps=13 format=3 uid="uid://0ct1rst3xen3"]
 
 [ext_resource type="Script" path="res://Scripts/Camera/CameraController.gd" id="1_qu77p"]
 [ext_resource type="Script" path="res://Scripts/Terrain/PerlinGeneration.gd" id="2_swhnp"]
@@ -30,6 +30,89 @@ func _process(delta):
 	set_text(\"Working Threads: %s\" % len(%Terrain.workingThreads))
 "
 
+[sub_resource type="GDScript" id="GDScript_4540x"]
+resource_name = "TerrainDebug"
+script/source = "extends MarginContainer
+
+@onready var terrain : Node3D = %Terrain
+
+@onready var seedLabel = $PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/Seed
+
+@onready var x_count = $PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/XCount
+@onready var y_count = $PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/YCount
+
+@onready var x_chunk = $PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer/XChunk
+@onready var y_chunk = $PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer/YChunk
+
+func _ready():
+	seedLabel.text = str(terrain.noiseSeed)
+	x_count.value = terrain.chunkCount.x
+	y_count.value = terrain.chunkCount.y
+	x_chunk.value = terrain.chunkSize.x
+	y_chunk.value = terrain.chunkSize.y
+
+func ChunkCountXChanged(value):
+	terrain.chunkCount.x = int(value)
+
+func ChunkCountYChanged(value):
+	terrain.chunkCount.y = int(value)
+
+func ChunkSizeXChanged(value):
+	terrain.chunkSize.x = int(value)
+
+func ChunkSizeYChanged(value):
+	terrain.chunkSize.y = int(value)
+	
+func Generate():
+	terrain.GenerateMap()
+
+func _on_seed_text_changed(new_text : String):
+	var value = new_text
+	if not new_text.is_valid_int():
+		value = hash(new_text)
+	else:
+		value = int(new_text)
+	terrain.noiseSeed = value
+"
+
+[sub_resource type="Theme" id="Theme_6jeyl"]
+LineEdit/colors/font_color = Color(1, 0.133333, 0.133333, 1)
+
+[sub_resource type="ImageTexture" id="ImageTexture_7hjju"]
+
+[sub_resource type="Theme" id="Theme_087ga"]
+LineEdit/colors/font_color = Color(0.164706, 0.611765, 0.321569, 1)
+
+[sub_resource type="GDScript" id="GDScript_37f7c"]
+resource_name = "CameraFlagsDebug"
+script/source = "extends MarginContainer
+
+@onready var camera_controller = $\"../../../CameraController\"
+
+@onready var can_move = $PanelContainer/MarginContainer/VBoxContainer/CanMove
+@onready var can_pan = $PanelContainer/MarginContainer/VBoxContainer/CanPan
+@onready var can_rotate = $PanelContainer/MarginContainer/VBoxContainer/CanRotate
+@onready var can_zoom = $PanelContainer/MarginContainer/VBoxContainer/CanZoom
+
+func _ready():
+	can_move.button_pressed = camera_controller.canMove
+	can_pan.button_pressed = camera_controller.canPan
+	can_rotate.button_pressed = camera_controller.canRotate
+	can_zoom.button_pressed = camera_controller.canZoom
+
+func _on_can_move_toggled(toggled_on):
+	camera_controller.canMove = toggled_on
+
+func _on_can_pan_toggled(toggled_on):
+	camera_controller.canPan = toggled_on
+
+func _on_can_rotate_toggled(toggled_on):
+	camera_controller.canRotate = toggled_on
+
+func _on_can_zoom_toggled(toggled_on):
+	camera_controller.canZoom = toggled_on
+"
+
 [node name="Game" type="Node3D"]
 
 [node name="CameraController" type="Node3D" parent="."]
@@ -49,8 +132,8 @@ current = true
 [node name="Terrain" type="Node3D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_swhnp")
-chunkSize = Vector2i(16, 16)
-chunkCount = Vector2i(16, 16)
+chunkSize = Vector2i(32, 32)
+chunkCount = Vector2i(32, 32)
 chunk = ExtResource("3_2atci")
 cellValues = "res://Assets/Terrain/Cells"
 noise = SubResource("FastNoiseLite_6blkl")
@@ -105,3 +188,165 @@ layout_mode = 2
 size_flags_horizontal = 8
 text = "Working Threads: 0"
 script = SubResource("GDScript_5sb7k")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Terrain" type="MarginContainer" parent="UserInterface/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = SubResource("GDScript_4540x")
+
+[node name="PanelContainer" type="PanelContainer" parent="UserInterface/VBoxContainer/Terrain"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Map generation"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Seed"
+
+[node name="Seed" type="LineEdit" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Chunk Count"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+
+[node name="XCount" type="SpinBox" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme = SubResource("Theme_6jeyl")
+theme_override_icons/updown = SubResource("ImageTexture_7hjju")
+allow_greater = true
+alignment = 1
+
+[node name="YCount" type="SpinBox" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme = SubResource("Theme_087ga")
+theme_override_icons/updown = SubResource("ImageTexture_7hjju")
+allow_greater = true
+alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Chunk Size"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="XChunk" type="SpinBox" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_6jeyl")
+theme_override_icons/updown = SubResource("ImageTexture_7hjju")
+allow_greater = true
+alignment = 1
+
+[node name="YChunk" type="SpinBox" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_087ga")
+theme_override_icons/updown = SubResource("ImageTexture_7hjju")
+allow_greater = true
+alignment = 1
+
+[node name="Generate" type="Button" parent="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Generate"
+
+[node name="CameraFlags" type="MarginContainer" parent="UserInterface/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+script = SubResource("GDScript_37f7c")
+
+[node name="PanelContainer" type="PanelContainer" parent="UserInterface/VBoxContainer/CameraFlags"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Camera Flags"
+
+[node name="CanMove" type="CheckBox" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+keep_pressed_outside = true
+text = "Can Move"
+alignment = 2
+
+[node name="CanPan" type="CheckBox" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+keep_pressed_outside = true
+text = "Can Pan"
+alignment = 2
+
+[node name="CanRotate" type="CheckBox" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+keep_pressed_outside = true
+text = "Can Rotate"
+alignment = 2
+
+[node name="CanZoom" type="CheckBox" parent="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+keep_pressed_outside = true
+text = "Can Zoom"
+alignment = 2
+
+[connection signal="text_changed" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/Seed" to="UserInterface/VBoxContainer/Terrain" method="_on_seed_text_changed"]
+[connection signal="value_changed" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/XCount" to="UserInterface/VBoxContainer/Terrain" method="ChunkCountXChanged"]
+[connection signal="value_changed" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/HBoxContainer2/YCount" to="UserInterface/VBoxContainer/Terrain" method="ChunkCountYChanged"]
+[connection signal="value_changed" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer/XChunk" to="UserInterface/VBoxContainer/Terrain" method="ChunkSizeXChanged"]
+[connection signal="value_changed" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer3/HBoxContainer/YChunk" to="UserInterface/VBoxContainer/Terrain" method="ChunkSizeYChanged"]
+[connection signal="button_up" from="UserInterface/VBoxContainer/Terrain/PanelContainer/MarginContainer/VBoxContainer/Generate" to="UserInterface/VBoxContainer/Terrain" method="Generate"]
+[connection signal="toggled" from="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer/CanMove" to="UserInterface/VBoxContainer/CameraFlags" method="_on_can_move_toggled"]
+[connection signal="toggled" from="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer/CanPan" to="UserInterface/VBoxContainer/CameraFlags" method="_on_can_pan_toggled"]
+[connection signal="toggled" from="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer/CanRotate" to="UserInterface/VBoxContainer/CameraFlags" method="_on_can_rotate_toggled"]
+[connection signal="toggled" from="UserInterface/VBoxContainer/CameraFlags/PanelContainer/MarginContainer/VBoxContainer/CanZoom" to="UserInterface/VBoxContainer/CameraFlags" method="_on_can_zoom_toggled"]
