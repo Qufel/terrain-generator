@@ -20,6 +20,11 @@ var cells : Array[Cell]
 var offsetX : float
 var offsetY : float
 
+# NOTE High amount of max threads can bring heavy load for PC and cause crashes
+const MAX_THREADS = 16
+var generationQueue : Array[Callable] = []
+var workingThreads : Array[Thread] = []
+
 func _ready():
 	GenerateTerrain()
 
@@ -53,9 +58,11 @@ func GenerateTerrain():
 				0,
 				y * chunkSize.y - offsetY
 			)
-			add_child(GenerateChunk(pos, x, y))
+			var thread = Thread.new()
+			workingThreads.append(thread)
+			thread.start(GenerateChunk.bind(pos, x, y, thread))
 
-func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int):
+func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 	var chunkInstance = chunk.instantiate()
 	chunkInstance.position = pos
 	chunkInstance.name = "Chunk [%s, %s]" % [xCoord, yCoord]
@@ -118,7 +125,13 @@ func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int):
 	
 	meshesUsed = {}
 	meshesPos = {}
+	call_deferred("DisplayChunk", thr)
 	return chunkInstance
+
+func DisplayChunk(thr : Thread):
+	var chunkProduct = thr.wait_to_finish()
+	call_deferred("add_child", chunkProduct)
+	workingThreads.erase(thr)
 
 ##Function collecting perlin values of the cell corners and converting it to single int value used to get proper cell type/mesh
 func GetCornersValue(x : float, y : float) -> int:
@@ -153,3 +166,8 @@ func GetCellByCorners(cv : int) -> Cell:
 			return cell
 			
 	return Cell.new()
+
+func _exit_tree():
+	if len(workingThreads) > 0:
+		for thr in workingThreads:
+			thr.wait_to_finish()

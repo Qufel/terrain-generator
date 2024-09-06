@@ -1,10 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://0ct1rst3xen3"]
+[gd_scene load_steps=8 format=3 uid="uid://0ct1rst3xen3"]
 
 [ext_resource type="Script" path="res://Scripts/Camera/CameraController.gd" id="1_qu77p"]
 [ext_resource type="Script" path="res://Scripts/Terrain/PerlinGeneration.gd" id="2_swhnp"]
 [ext_resource type="PackedScene" uid="uid://6woq5db0firt" path="res://Scenes/chunk.tscn" id="3_2atci"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6blkl"]
+
+[sub_resource type="GDScript" id="GDScript_ssaqe"]
+resource_name = "FPSDisplay"
+script/source = "extends Label
+
+func _process(delta):
+	set_text(\"FPS: %s\" % Engine.get_frames_per_second())
+"
+
+[sub_resource type="GDScript" id="GDScript_upkmq"]
+resource_name = "ThreadQueueCt"
+script/source = "extends Label
+
+func _process(delta):
+	set_text(\"Threads in Queue: %s\" % len(%Terrain.generationQueue))
+"
+
+[sub_resource type="GDScript" id="GDScript_5sb7k"]
+resource_name = "WorkingThreadsCt"
+script/source = "extends Label
+
+func _process(delta):
+	set_text(\"Working Threads: %s\" % len(%Terrain.workingThreads))
+"
 
 [node name="Game" type="Node3D"]
 
@@ -46,3 +70,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Counters" type="MarginContainer" parent="UserInterface"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -61.0
+offset_bottom = 39.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UserInterface/Counters"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="FPS" type="Label" parent="UserInterface/Counters/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "FPS: 0"
+script = SubResource("GDScript_ssaqe")
+
+[node name="ThreadQueue" type="Label" parent="UserInterface/Counters/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Threads in Queue: 0"
+script = SubResource("GDScript_upkmq")
+
+[node name="WorkingThreads" type="Label" parent="UserInterface/Counters/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Working Threads: 0"
+script = SubResource("GDScript_5sb7k")
