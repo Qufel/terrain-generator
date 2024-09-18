@@ -38,6 +38,10 @@ _subresources={
 "Land_Colour": {
 "use_external/enabled": true,
 "use_external/path": "res://Assets/Materials/Grass.tres"
+},
+"Water_Colour": {
+"use_external/enabled": true,
+"use_external/path": "res://Assets/Materials/Water.tres"
 }
 },
 "meshes": {

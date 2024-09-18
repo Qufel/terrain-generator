@@ -23,6 +23,7 @@ Debug="*res://Scripts/Debug.gd"
 
 window/size/viewport_width=1560
 window/size/viewport_height=960
+window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
@@ -76,5 +77,8 @@ zoom_out={
 [rendering]
 
 gl_compatibility/nvidia_disable_threaded_optimization=false
-lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=1
+lights_and_shadows/directional_shadow/16_bits=false
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
+occlusion_culling/use_occlusion_culling=true

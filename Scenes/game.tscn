@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://0ct1rst3xen3"]
+[gd_scene load_steps=14 format=3 uid="uid://0ct1rst3xen3"]
 
 [ext_resource type="Script" path="res://Scripts/Camera/CameraController.gd" id="1_qu77p"]
 [ext_resource type="Script" path="res://Scripts/Terrain/PerlinGeneration.gd" id="2_swhnp"]
 [ext_resource type="PackedScene" uid="uid://6woq5db0firt" path="res://Scenes/chunk.tscn" id="3_2atci"]
+[ext_resource type="Material" uid="uid://1o0c5k7iyyy5" path="res://Assets/Materials/Water.tres" id="4_t048o"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6blkl"]
 
@@ -117,10 +118,11 @@ func _on_can_zoom_toggled(toggled_on):
 
 [node name="CameraController" type="Node3D" parent="."]
 script = ExtResource("1_qu77p")
-speed = 30.0
-panSpeed = 30.0
-zoomSpeed = 60.0
-zoomMax = 40.0
+speed = 50.0
+panSpeed = 50.0
+zoomSpeed = 120.0
+zoomMin = 0.0
+zoomMax = 60.0
 rotationSpeed = 4.0
 
 [node name="CameraSocket" type="Node3D" parent="CameraController"]
@@ -131,20 +133,26 @@ current = true
 
 [node name="Terrain" type="Node3D" parent="."]
 unique_name_in_owner = true
+transform = Transform3D(0.996454, 0, 0, 0, 0.996454, 0, 0, 0, 0.996454, 0, 0, 0)
 script = ExtResource("2_swhnp")
-chunkSize = Vector2i(32, 32)
-chunkCount = Vector2i(32, 32)
+chunkSize = Vector2i(16, 16)
+chunkCount = Vector2i(16, 16)
 chunk = ExtResource("3_2atci")
 cellValues = "res://Assets/Terrain/Cells"
 noise = SubResource("FastNoiseLite_6blkl")
 water = -0.3
+waterMaterial = ExtResource("4_t048o")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.368044, 0.464905, -0.805238, -1.12848e-08, 0.866025, 0.500001, 0.929809, -0.184022, 0.318735, 0, 0, 0)
 shadow_enabled = true
+shadow_opacity = 0.9
+shadow_blur = 3.0
+directional_shadow_split_3 = 0.4
 directional_shadow_blend_splits = true
 directional_shadow_fade_start = 1.0
 directional_shadow_max_distance = 256.0
+directional_shadow_pancake_size = 10.0
 
 [node name="UserInterface" type="Control" parent="."]
 layout_mode = 3

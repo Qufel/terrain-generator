@@ -1,5 +1,7 @@
 extends Node3D
 
+const TILESET_TILE_TOP = preload("res://Assets/Terrain/Tiles/TileTop.res")
+
 @export_group("Sizing")
 @export var chunkSize : Vector2i = Vector2i (2, 2) ##Size of one chunk
 @export var chunkCount : Vector2i = Vector2i(1, 1) ##Size of the terrain in chunks
@@ -14,7 +16,10 @@ var cells : Array[Cell]
 @export var noiseSeed : int = 0
 @export var noise : FastNoiseLite
 
+@export_subgroup("Water")
 @export_range(-1, 1, 0.01) var water : float = 0.2 ##Threshold specifing border value between water and land
+@export var waterMaterial : Material
+@export var waterHeight : float = 0.5
 
 # INFO Offset values for chunks
 var offsetX : float
@@ -26,17 +31,15 @@ var generationQueue : Array = []
 var workingThreads : Array = []
 
 func GenerateMap():
-	# INFO clears previous map iteration if existed
+	# INFO Clears previous map iteration if existed
 	if get_children().size() > 0:
 		ClearMap()
 	
-	# INFO Generates base terrain
-	GenerateTerrain()
-	# TODO Resource generation
-	 
-	# TODO Forest generation
-	
-	# TODO Foliage generation
+	# INFO Generates chunks
+	Populate()
+	# INFO Adds water to map
+	GenerateWater()
+
 	
 ## Clears previous map
 func ClearMap():
@@ -44,7 +47,7 @@ func ClearMap():
 		remove_child(n)
 		n.queue_free()
 
-func GenerateTerrain():
+func Populate():
 	#region Initialize and check variables
 	# INFO Checks if chunk scene is assigned
 	assert(chunk != null, "Chunk scene is not assigned!")
@@ -79,11 +82,33 @@ func GenerateTerrain():
 				"x" : x,
 				"y" : y
 			})
+
+func GenerateWater():
+	var waterInstance = MeshInstance3D.new()
+	waterInstance.mesh = PlaneMesh.new()
+	waterInstance.position = Vector3(0, waterHeight, 0)
+	waterInstance.scale = Vector3(chunkCount.x * chunkSize.x * CELL_SIZE / 2, 1, chunkCount.y * chunkSize.y * CELL_SIZE / 2)
+	waterInstance.name = "WaterMesh"
+	waterInstance.material_override = waterMaterial
+	add_child(waterInstance)
 	
 func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 	var chunkInstance = chunk.instantiate()
 	chunkInstance.position = pos
 	chunkInstance.name = "Chunk [%s, %s]" % [xCoord, yCoord]
+	
+	# INFO Generate Terrain
+	chunkInstance.add_child(GenerateTerrain(xCoord, yCoord))
+	
+	# INFO Generate Trees
+	
+	call_deferred("DisplayChunk", thr)
+	return chunkInstance
+
+## Function generating terrain cells, returns Node3D with multimeshes
+func GenerateTerrain(xCoord : int, yCoord : int):
+	var terrainMeshes = Node3D.new()
+	terrainMeshes.name = "TerrainMeshes"
 	
 	var chunkStart : Vector2 = Vector2(
 		xCoord * chunkSize.x - ( offsetX + chunkSize.x / 2 ),
@@ -140,21 +165,14 @@ func GenerateChunk(pos : Vector3, xCoord : int, yCoord : int, thr : Thread):
 	# INFO Add chunk and it's multimeshes to scene tree
 	for multimesh : MultiMeshInstance3D in meshesUsed.values():
 		multimesh.name = "MultiMesh_%s" % multimesh.multimesh.mesh.resource_name
-		chunkInstance.get_node("TerrainMeshes").add_child(multimesh)
+		terrainMeshes.add_child(multimesh)
 	
 	# INFO Clear variables and call deferred function
 	meshesUsed = {}
 	meshesPos = {}
-	call_deferred("DisplayChunk", thr)
-	return chunkInstance
+	return terrainMeshes
 
-func DisplayChunk(thr : Thread):
-	var chunkProduct = thr.wait_to_finish()
-	workingThreads.erase(thr)
-	call_deferred("add_child", chunkProduct)
-	StartTask()
-
-##Function collecting perlin values of the cell corners and converting it to single int value used to get proper cell type/mesh
+## Function collecting perlin values of the cell corners and converting it to single int value used to get proper cell type/mesh
 func GetCornersValue(x : float, y : float) -> int:
 	# INFO Get values of each corner of the cell
 	var corners = [
@@ -174,11 +192,12 @@ func GetCornersValue(x : float, y : float) -> int:
 	var binaryValue = "".join(cornerValues)
 	return binaryValue.bin_to_int()
 
+## Function doing funky things with perlin noise
 func GetTerrainNoise(point : Vector2) -> float:
 	# TODO Apply multiple types of terrain noise, isalnds, rivers, lakes, etc.
 	return noise.get_noise_2dv(point)
 
-##Function returns cell object according to provided corners value
+## Function returns cell object according to provided corners value
 func GetCellByCorners(cv : int) -> Cell:
 	assert(not cells.is_empty(), "Cells array is empty!")
 	
@@ -188,6 +207,7 @@ func GetCellByCorners(cv : int) -> Cell:
 			
 	return Cell.new()
 
+#region Multithreading functions
 func QueueTask(data):
 	generationQueue.append(data)
 	StartTask()
@@ -199,7 +219,15 @@ func StartTask():
 		workingThreads.append(thread)
 		thread.start(GenerateChunk.bind(data["position"], data["x"], data["y"], thread))
 
+func DisplayChunk(thr : Thread):
+	var chunkProduct = thr.wait_to_finish()
+	workingThreads.erase(thr)
+	call_deferred("add_child", chunkProduct)
+	StartTask()
+#endregion
+
 func _exit_tree():
+	ClearMap()
 	generationQueue.clear()
 	if len(workingThreads) > 0:
 		for thr in workingThreads:
