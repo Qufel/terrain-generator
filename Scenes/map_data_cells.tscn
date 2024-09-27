@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://c82t5oc6htpk7"]
+
+[ext_resource type="Material" uid="uid://bcemht32oq441" path="res://Assets/Materials/MapData/CellGround.tres" id="1_sal2a"]
+[ext_resource type="Material" uid="uid://lceio6wocs8q" path="res://Assets/Materials/MapData/CellWater.tres" id="2_8co4j"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_0e374"]
+material = ExtResource("1_sal2a")
+size = Vector2(1, 1)
+center_offset = Vector3(0, 0.5, 0)
+
+[node name="MapDataCells" type="Node3D"]
+
+[node name="CellGround" type="MeshInstance3D" parent="."]
+material_override = ExtResource("1_sal2a")
+mesh = SubResource("PlaneMesh_0e374")
+
+[node name="CellWater" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+material_override = ExtResource("2_8co4j")
+mesh = SubResource("PlaneMesh_0e374")

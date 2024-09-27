@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="Cell" load_steps=3 format=3 uid="uid://c3ehgt7iry1ny"]
 
-[ext_resource type="ArrayMesh" uid="uid://dq2u3nwy0dep8" path="res://Assets/Terrain/Tiles/ TileSide.res" id="1_ysbw2"]
+[ext_resource type="ArrayMesh" uid="uid://ccfd0k48llq4e" path="res://Assets/Terrain/Tiles/CoastSide.res" id="1_ysbw2"]
 [ext_resource type="Script" path="res://Scripts/Terrain/CellResource.gd" id="2_o2sxd"]
 
 [resource]

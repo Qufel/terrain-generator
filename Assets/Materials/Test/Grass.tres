@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c06hm1f5slyds"]
+
+[ext_resource type="Shader" uid="uid://c43kyoo3so41l" path="res://Assets/Shaders/BaseShader.tres" id="1_p8rcp"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_p8rcp")
+shader_parameter/Albedo = Color(0.294118, 0.584314, 0.231373, 1)

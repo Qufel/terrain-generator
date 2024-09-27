@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="Cell" load_steps=3 format=3 uid="uid://dot431cmy06eh"]
 
-[ext_resource type="ArrayMesh" uid="uid://c1a6lq5lox0s" path="res://Assets/Terrain/Tiles/TileCornerIn.res" id="1_gihpu"]
+[ext_resource type="ArrayMesh" uid="uid://cmjeesrwpojpa" path="res://Assets/Terrain/Tiles/CoastCornerIn.res" id="1_gihpu"]
 [ext_resource type="Script" path="res://Scripts/Terrain/CellResource.gd" id="2_1gsro"]
 
 [resource]
 script = ExtResource("2_1gsro")
 mesh = ExtResource("1_gihpu")
-rotation = 1
+rotation = 2
 corners = 13

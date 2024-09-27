@@ -18,12 +18,16 @@ config/icon="res://icon.svg"
 [autoload]
 
 Debug="*res://Scripts/Debug.gd"
+DebugDraw="*res://Addons/zylann.debug_draw/debug_draw.gd"
+
+[debug]
+
+gdscript/warnings/integer_division=0
 
 [display]
 
 window/size/viewport_width=1560
 window/size/viewport_height=960
-window/size/always_on_top=true
 window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
@@ -74,11 +78,20 @@ zoom_out={
 ]
 }
 
+[physics]
+
+3d/run_on_separate_thread=true
+
 [rendering]
 
-gl_compatibility/nvidia_disable_threaded_optimization=false
+lights_and_shadows/directional_shadow/size=2048
+lights_and_shadows/directional_shadow/size.mobile=1024
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality.mobile=1
-lights_and_shadows/directional_shadow/16_bits=false
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=3
+global_illumination/gi/use_half_resolution=true
+driver/depth_prepass/enable=false
+anti_aliasing/quality/msaa_2d=2
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/screen_space_aa=1
 occlusion_culling/use_occlusion_culling=true

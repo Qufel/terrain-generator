@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="Cell" load_steps=3 format=3 uid="uid://c8cwpshy3tws"]
 
 [ext_resource type="Script" path="res://Scripts/Terrain/CellResource.gd" id="1_rwowp"]
-[ext_resource type="ArrayMesh" uid="uid://cw60eif7trrab" path="res://Assets/Terrain/Tiles/TileBottom.res" id="1_u22r0"]
+[ext_resource type="ArrayMesh" uid="uid://ddnibqj34mcv8" path="res://Assets/Terrain/Tiles/WaterbedTile.res" id="1_u22r0"]
 
 [resource]
 script = ExtResource("1_rwowp")

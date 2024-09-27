@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://lceio6wocs8q"]
+
+[ext_resource type="Texture2D" uid="uid://baa7vyu8yu10y" path="res://Assets/Textures/MapData/CellWater.png" id="1_x8www"]
+
+[resource]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_texture = ExtResource("1_x8www")

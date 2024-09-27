@@ -62,7 +62,6 @@ func Move(delta : float):
  
 func Rotate(delta : float):
 	if !canRotate: return
-	
 	RotateLeftRight(delta, rotationDir)
 
 func RotateLeftRight(delta : float, dir : float):
